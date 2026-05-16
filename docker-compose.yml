@@ -1,0 +1,54 @@
+services:
+  suricata:
+    build: ./docker/suricata
+    volumes:
+      - ./data/pcaps:/pcaps
+      - ./data/baseline_alerts:/var/log/suricata
+      - ./docker/suricata/rules:/etc/suricata/rules
+    networks:
+      - monitoring
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+  elasticsearch:
+    build: ./docker/elasticsearch
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - monitoring
+
+  kibana:
+    build: ./docker/kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_SSL_VERIFICATIONMODE=none
+      - SERVER_SSL_ENABLED=false
+    depends_on:
+      - elasticsearch
+    networks:
+      - monitoring
+
+  enrichment:
+    build: ./docker/enrichment
+    env_file:
+      - .env
+    volumes:
+      - ./data/baseline_alerts:/alerts
+      - ./src:/app
+    depends_on:
+      - elasticsearch
+      - suricata
+    networks:
+      - monitoring
+
+volumes:
+  elasticsearch_data:
+
+networks:
+  monitoring:
+    driver: bridge

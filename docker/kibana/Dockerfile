@@ -1,0 +1,6 @@
+FROM docker.elastic.co/kibana/kibana:8.11.0
+
+ENV ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+ENV ELASTICSEARCH_SSL_VERIFICATIONMODE=none
+ENV SERVER_SSL_ENABLED=false
+

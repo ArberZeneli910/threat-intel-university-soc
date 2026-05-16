@@ -1,0 +1,35 @@
+%YAML 1.1
+---
+default-log-dir: /var/log/suricata
+
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types:
+        - alert:
+            payload: yes
+            packet: yes
+            metadata: yes
+
+af-packet:
+  - interface: enp0s3
+
+
+pcap:
+  - interface: enp0s3
+
+default-rule-path: /etc/suricata/rules
+
+rule-files:
+  -"*.rules"
+
+app-layer:
+  protocols:
+    http:
+      enabled: yes
+    dns:
+      enabled: yes
+    tls:
+      enabled: yes
