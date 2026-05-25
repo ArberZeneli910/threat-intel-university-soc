@@ -1,6 +1,6 @@
 %YAML 1.1
 ---
-default-log-dir: /var/log/suricata
+default-log-dir: /var/log/suricata/
 
 outputs:
   - eve-log:
@@ -12,10 +12,13 @@ outputs:
             payload: yes
             packet: yes
             metadata: yes
+  - fast:
+      enabled: yes
+      filename: fast.log
+      append: yes
 
 af-packet:
   - interface: enp0s3
-
 
 pcap:
   - interface: enp0s3
@@ -23,7 +26,7 @@ pcap:
 default-rule-path: /etc/suricata/rules
 
 rule-files:
-  -"*.rules"
+  - "botcc.rules"
 
 app-layer:
   protocols:

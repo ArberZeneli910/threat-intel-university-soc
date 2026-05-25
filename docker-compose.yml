@@ -19,6 +19,12 @@ services:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
       - monitoring
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
 
   kibana:
     build: ./docker/kibana
@@ -41,8 +47,8 @@ services:
       - ./data/baseline_alerts:/alerts
       - ./src:/app
     depends_on:
-      - elasticsearch
-      - suricata
+      elasticsearch:
+        condition: service_healthy
     networks:
       - monitoring
 
